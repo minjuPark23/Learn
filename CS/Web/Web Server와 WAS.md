@@ -153,3 +153,4 @@
 [참고]
 - [Web Server와 WAS 이해하기](https://mi-nya.tistory.com/237)
 - [Web Server와 WAS 구분하는 이유](https://velog.io/@hongcheol/%EB%A9%B4%EC%A0%91Web-Server-%EC%99%80-WAS)
+- [Web Server와 WAS의 차이와 웹 서비스 구조](https://gmlwjd9405.github.io/2018/10/27/webserver-vs-was.html)
