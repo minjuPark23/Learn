@@ -1,5 +1,7 @@
 # [Network] 웹서버와 WAS
 
+<img src="https://user-images.githubusercontent.com/60870438/170643688-ad312527-9988-4b07-bafe-38c8e2d4d4f0.png" width=70%>
+
 ### 1. 웹의 동작 원리
 
 <img src="https://user-images.githubusercontent.com/60870438/167300519-c1cc5666-726c-4840-8de3-04320aedfafd.png" width=70%>
@@ -44,7 +46,7 @@
 #### Web Server
 - HTTP 프로토콜을 기반으로 하여 웹 브라우저의 요청을 서비스하는 기능 담당
 - 정적인 컨텐츠(.html/ .png/ .jpg/ .css 등)을 제공할 때에는 WAS를 거치지 않고 바로 제공
-- 동적인 컨텐프 요청이 들어왔을 때에는 해당 요청을 WAS에 보내고 처리한 결과를 반환 받아 클라이언트에게 응답
+- 동적인 컨텐츠 요청이 들어왔을 때에는 해당 요청을 WAS에 보내고 처리한 결과를 반환 받아 클라이언트에게 응답
 - 종류: Apache Server, Nginx, IIS(Windows 전용 Web Server)
 - 단점
   - JSP나 PHP 같은 응용 프로그래밍 언어를 해석할 수 없다
