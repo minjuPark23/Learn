@@ -181,7 +181,7 @@ spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL5InnoDBDialec
 
 > 비즈니스 로직을 처리해야할 곳은?
 >   Domain ⁉
->   서비스에서는 트랜잭션과 도메인 간의 순서만 보장해주고 도메인 내에 메서드를 구현한다.
+>   - 서비스에서는 트랜잭션과 도메인 간의 순서만 보장해주고 도메인 내에 메서드를 구현한다.
 
 #### Dto를 만드는 방법
 
