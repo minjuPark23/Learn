@@ -299,3 +299,187 @@ indexController.java
   - 앞서 작성된 CustomOAuth2UserService에서 로그인 성공 시 세션에 SessionUser가 저장됨
   - 즉, 로그인 성공시 값을 가져올 수 있다.
 
+
+### 어노테이션 기반 개선하기
+
+1. 세션값을 가져오는 부분이 반복될 수 있다. 
+  메소드 인자로 세션값을 바로 받을 수 있도록 하자. 
+  
+- @LoginUser 어노테이션
+```
+@Target(ElementType.PARAMETER) 
+@Retention(RetentionPolicy.RUNTIME)
+public @interface LoginUser { // 
+}
+```
+
+✳ @Target(ElementType.PARAMETER)
+  - 어노테이션의 생성 위치. 파라미터로 지정했으니 메소드의 파라미터로 선언된 객체에서만 사용 가능.
+
+✳ @interface
+  - 해당 파일을 어노테이션 클래스로 지정한다.
+
+2. 해야 할 일 메소드로 변경
+```
+@RequiredArgsConstructor
+@Component
+public class LoginUserArgumentResolver implements HandlerMethodArgumentResolver {
+
+    private final HttpSession httpSession;
+
+    @Override
+    public boolean supportsParameter(MethodParameter parameter) {
+        boolean isLoginUserAnnotation = parameter.getParameterAnnotation(LoginUser.class) != null;
+        boolean isUserClass = SessionUser.class.equals(parameter.getParameterType());
+        return isLoginUserAnnotation && isUserClass;
+    }
+
+    @Override
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+        return httpSession.getAttribute("user");
+    }
+```
+
+✳ supportsParameter()
+  - 컨트롤러 메서드의 특정 파라미터를 지원한다.
+  - 파라미터에는 @LoginUser 어노테이션이 붙어 있고, 파라미터 클래스 타입이 SessionUser.class인 경우 true 반환
+
+✳ resolveArgument()
+  - 파라미터에 전달할 객체 생성
+  - 세션에서 객체를 가져온다.
+
+3. WebConfig.java
+ ```
+ @RequiredArgsConstructor
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
+
+    private final LoginUserArgumentResolver loginUserArgumentResolver;
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+        argumentResolvers.add(loginUserArgumentResolver);
+    }
+}
+ ````
+
+4. indexController 수정하기
+```
+@RequiredArgsConstructor
+@Controller
+public class IndexController {
+
+    private final PostsService postsService;
+    private final HttpSession httpSession;
+
+    @GetMapping("/")
+    public String index(Model model, @LoginUser SessionUser user){
+        model.addAttribute("posts", postsService.findAllDesc());
+
+        if(user != null){
+            model.addAttribute("loginUserName", user.getName());
+        }
+        return "index";
+    }
+```
+
+✳ @LoginUser SessionUser user
+  - 세션 정보를 가져오는 곳 변경
+  - 어느 컨트롤러든지 @LoginUser만 자용하면 세션 정보를 가져올 수 있다.
+
+### 세션 저장소로 DB 사용하기
+- 세션은 내장 톰캣(WAS)의 메모리에 저장되기 때문에 애플리케이션 실행 시 항상 초기화 된다.
+- 즉, 배포할 때마다 톰캣이 재시작 되는 것
+- 또한 2대 이상의 서버에서 서비스하고 있다면 톰캣마다 세션 동기화 설정을 해야한다.
+
+☑ 현업에서는 세션 저장소에 대해 3가지 중 한 가지를 선택한다
+  1. 톰캣 세션 사용
+    - 일반적으로 별다른 설정 하지 않음
+    - 톰켓(WAS)에 세션이 저장되기 때문에 2대 이상의 WQS가 구동되는 환경에서는 톰캣들 간의 세션 공유를 위한 추가 설정이 필요
+  2. MySQL과 같은 데이터베이스를 세션 저장소로 사용
+    - 여러 WAS 간의 공용 세션을 사용할 수 있는 가장 쉬운 방법
+    - 많은 설정이 필요 없지만, 결국 로긍니마다 DB IO가 발생해 성능상 이슈가 발생할 수 있음
+    - 보통 로그인 요청이 많이 없는 백오피스, 사내 시스템 용도에서 사용
+  3. Redis, Memcached와 같은 메모리 DB를 세션 저장소로 사용한다.
+    - B2C 서비스에서 가장 많이 사용하는 방식
+    - 실제 서비스로 사용하기 위해서는 Embedded Redis와 같은 방식이 아닌 외부 메모리 서버가 필요하다.
+=> 여기서는 두번째 방식(DB를 세션 저장소로 사용)을 선택
+  - 설정이 간단
+  - 사용자가 많은 서비스가 아님
+  - 비용 절감
+  - 이후 AWS에서 이 서비스를 배포하고 운영할 때를 생각하면 Redis와 같은 메모리 DB를 사용하기는 부담스러움. 별도의 사용료를 지불해야 하기 때문이다.
+
+1️⃣ 의존성 등록 
+
+build.gradle
+```
+implementation 'org.springframework.session:spring-session-jdbc'sp
+```
+application.properties에 세션 저장소를 jdbc로 선택하도록 저장
+```
+spring.session.store-type=jdbc
+```
+
+=> db에 세션을 위한 테이블 spring_session, spring_session_attribbutes가 생성된다.
+
+<img src="https://user-images.githubusercontent.com/60870438/171438524-e8df3d80-a1d0-449a-9afe-a0c353c993f1.png" width=50%>
+
+
+### 네이버 로그인
+
+[네이버 오픈 API](https://developers.naver.com/apps/#/register?api=nvlogin)
+
+#### 1️⃣ application-oauth.properties 추가
+```
+# registration
+spring.security.oauth2.client.registration.naver.client-id={클라이언트 ID}
+spring.security.oauth2.client.registration.naver.client-secret={클라이언트 비밀번호}
+spring.security.oauth2.client.registration.naver.redirect-uri={baseUrl}/{action}/oauth2/code/{registrationId}
+spring.security.oauth2.client.registration.naver.authorization-grant-type=authorization_code
+spring.security.oauth2.client.registration.naver.scope=name,email,profile_image
+spring.security.oauth2.client.registration.naver.client-name=Naver
+
+# provider
+spring.security.oauth2.client.provider.naver.authorization-uri=https://nid.naver.com/oauth2.0/authorize
+spring.security.oauth2.client.provider.naver.token-uri=https://nid.naver.com/oauth2.0/token
+spring.security.oauth2.client.provider.naver.user-info-uri=https://openapi.naver.com/v1/nid/me
+spring.security.oauth2.client.provider.naver.user-name-attribute=response #(1)
+```
+☑ (1)
+  - 기준이되는 user_name의 이름을 네이버에서는 response로 해야한다.
+  - 이유는 네이버의 회원 조회 시 반환되는 JSON 형태 때문
+  - 스프링 시큐리티에선 하위 필드를 명시할 수 없다. 최상위 필드만 user-name으로 지정이 가능하다. 네이버의 응답값 최상위 필드는 resultCode, message, response
+
+#### 2️⃣ 스프링 시큐리티 설정 등록
+
+OAuthAttributes.java에 네이버인지 판단하는 코드만 추가하면 된다.
+
+
+### 기존 테스트에 시큐리티 적용하기
+
+- 기존에는 바로 API를 호출할 수 있었으나 시큐리티 옵션이 활성화되면서 인증된 사용자만 API를 호출할 수 있다.
+- 테스트 코드마다 인증한 사용자가 호출한 것처럼 작동하도록 수정해야 한다.
+
+#### 전체 테스트 수행하기
+
+Gradle > Tasks > verification > test 클릭!
+
+<img src="https://user-images.githubusercontent.com/60870438/171443798-e30a690a-77af-4b83-a979-23637547d3ac.png" width=50%>
+
+[junit5 수정](https://jojoldu.tistory.com/539)
+> 휴, 책에 있는 내용이 옛날 버전이라 이상하게 안되더니 새로 올라와있었습니당..
+> 
+> 그리고 원래 테스트 방법대로 안돼서 프로젝트 > test > Run All 'Tests'로 실행시켰더니 잘 된다.
+
+1. 어노테이션 변셩
+2. db 변경
+
+#### 임의로 인증된 사용자 추가하기
+@Test에 @WithModckUser(rols="USER")추가하기
+
+✳ @WithModckUser(roles="USER")
+  - 인증된 모의 사용자를 만들어 사용한다.
+  - roles에 권한을 추가한다.
+  - 즉, 어노테이션으로 인해 ROLE_USER 권한을 가진 사용자가 API를 요청하는 것과 동일한 효과를 가지게 된다.
+  - 하지만 이 어노테이션은 MockMvc에서만 작동한다. 우리는 @SpringBootTest로 해 놓았으니 이를 MockMvc로 사용하도록 변경하자
+
