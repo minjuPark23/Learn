@@ -35,3 +35,5 @@ pip install jupyter
 - 앞서 적은 방법으로 해보려 했으나 anaconda를 사용해 본 적이 있어서 그냥 pytho 삭제하고 다시 했다.
 - 설치시 아래 recommand만 체크 후 진행
 
+보통 아나콘다의 위치는 사용자 아래에 있다.
+사용자 > {내 이름} > IBG 생성
