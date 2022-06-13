@@ -1,18 +1,17 @@
 # [DB] SQL과 NoSQL의 차이
 
-주로 Node.js에 익숙하다면 NoSQL(MongoDB)를 Spring에 익숙하다면 SQL(MySQL)을 사용한다.
+```
+주로 Spring에 익숙하다면 SQL(MySQL)을, Node.js에 익숙하다면 NoSQL(MongoDB)를 사용한다.
+프레임워크에 따라 결정하지말고 적합한 DB를 찾아보자.
+```
 
-<img src="https://user-images.githubusercontent.com/60870438/173335047-accbca03-6e79-4837-ac08-123af0de7980.png" width=70%>
+<img src="https://user-images.githubusercontent.com/60870438/173335047-accbca03-6e79-4837-ac08-123af0de7980.png" width=30%>
 
 ## 1. SQL(관계형 데이터베이스)
 
-관계형 데이터베이스 관리 시스템을 RDBMS라고 한다.
+<img src="https://user-images.githubusercontent.com/60870438/173334843-0c080add-9311-4596-8ac0-6e6c6a331599.png" width=40%>
 
-MySQL, Oracle, MariaDB
-
-<img src="https://user-images.githubusercontent.com/60870438/173334843-0c080add-9311-4596-8ac0-6e6c6a331599.png" width=70%>
-
-#### SQL(Structured Query Language)
+### SQL(Structured Query Language)
 
 관계형 데이터베이스에서 사용되는 언어
 
@@ -20,7 +19,7 @@ SQL은 특정 회사에서 만드는 것이 아니라 국제 표준화 기구에
 
 그러나 SQL을 사용하는 DBMS를 만드는 회사에 따라 각 회사의 제품 특성을 반영한 SQL을 사용한다.
 
-#### 관계형 DB의 특징
+### 관계형 DB의 특징
 
 - 엄격한 스키마
   - 데이터는 테이블(table)에 레코드(record)로 저장되며, 각 테이블에는 명확하게 정의된 구조(structure)가 있다.
@@ -28,27 +27,27 @@ SQL은 특정 회사에서 만드는 것이 아니라 국제 표준화 기구에
   - 스키마를 준수하지 않은 레코드는 추가할 수 없다.
   - 데이터의 무결성
 
-<img src="https://user-images.githubusercontent.com/60870438/173320813-3f30a399-379b-4592-bbf6-40f02747203b.png" width=70%>
+<img src="https://user-images.githubusercontent.com/60870438/173320813-3f30a399-379b-4592-bbf6-40f02747203b.png" width=60%>
 
 - 관계
   - 데이터를 여러개의 테이블에 나누어 데이터의 중복을 피할 수 있다.
   - 데이터의 정확성
 
-<img src="https://user-images.githubusercontent.com/60870438/173320995-428168f4-8fa0-4165-a8f8-3a8fd25a049d.png" width=70%>
+<img src="https://user-images.githubusercontent.com/60870438/173320995-428168f4-8fa0-4165-a8f8-3a8fd25a049d.png" width=60%>
 
 
 ## 2. NoSQL(비관계형 데이터베이스)
 
 기본적으로 RDB와 반대되는 접근방식을 따른다.
 
-#### 특징
+### 비관계형 DB의 특징
 
 - 스키마 없음
   - 여기서는 테이블을 컬렉션(collection), 레코드를 문서(document)라고 부른다.
   - 다른 구조의 데이터를 같은 컬렉션에 추가할 수 있다.
   - 문서는 JSON 데이터와 비슷한 형태를 가지며 스키마를 신경쓰지 않는다.
 
-<img src="https://user-images.githubusercontent.com/60870438/173321691-eee0d507-aba4-4bf3-8331-0acc8372a7d9.png" width=70%>
+<img src="https://user-images.githubusercontent.com/60870438/173321691-eee0d507-aba4-4bf3-8331-0acc8372a7d9.png" width=60%>
 
 - 관계 없음
   - 일반적으로 관련 데이터를 동일한 컬렉션에 넣는다. <- RDB처럼 여러 테이블에 나누지 않는다.
@@ -56,7 +55,7 @@ SQL은 특정 회사에서 만드는 것이 아니라 국제 표준화 기구에
   - 따라서 여러 테이블/컬렉션에 join할 필요 없이 모든 데이터를 갖춘 문서를 작성한다. join이라는 개념이 존재하지 않는다.
   - 대신 컬렉션을 통해 데이터를 복제해 각 컬렉션 일부에 속하는 데이터를 정확하게 산출할 수 있다.
 
-<img src="https://user-images.githubusercontent.com/60870438/173322424-aecfbe36-9571-48a3-bbfe-c47ecb9b96b0.png" width=70%>
+<img src="https://user-images.githubusercontent.com/60870438/173322424-aecfbe36-9571-48a3-bbfe-c47ecb9b96b0.png" width=60%>
 
   - 그러나 데이터가 중복되기 때문에 불안정하다. 한쪽에서만 업데이트 될 위험 존재
   - 특정 데이터를 같이 사용하는 모든 컬렉션에서 똑같은 데이터의 업데이트를 수행해야 한다.
@@ -65,7 +64,7 @@ SQL은 특정 회사에서 만드는 것이 아니라 국제 표준화 기구에
 
 ### 데이터베이스의 확장성
 
-<img src="https://user-images.githubusercontent.com/60870438/173322971-f6f37935-141d-43d4-9196-b2373dd5aea3.png" width=70%>
+<img src="https://user-images.githubusercontent.com/60870438/173322971-f6f37935-141d-43d4-9196-b2373dd5aea3.png" width=60%>
 
 - 수직적 확장
   - 단순히 데이터베이스 서버의 성능 향상. ex) cpu 업그레이드
@@ -110,4 +109,8 @@ NoSQL
   - 데이터베이스의 수평적 확장이 필요한 경우
 
 [참고]
+
 [SQL vs NoSQL (MySQL vs. MongoDB)](https://siyoon210.tistory.com/130)
+
+[SQL(구조화 쿼리 언어) vs NoSQL(비구조화 쿼리 언어)](https://hanamon.kr/%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-sql-vs-nosql/)
+
