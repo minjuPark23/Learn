@@ -17,10 +17,12 @@ DNS는 TCP/IP 네트워크에서 사용되는 네임 서비스의 구조.
 
 EX) www.naver.com
 
+```
 www: 호스트 명으로 서브 도메인 (sub domain)
 naver: 도메인 명 (secend-level domain)
 .com: 최상위 도메인 (Top-level domain)
 .: Root domain
+```
 
 - 계층 구조는 root > top-level > second-level > sub domain인 순
 - 각 요소는 인접해있는 하위 계층 요소의 정보(IP 주소 등)을 알고있으며, 인접하지 않은 요소에 대해서는 정보를 가지고 있지 않다.
@@ -42,9 +44,13 @@ naver: 도메인 명 (secend-level domain)
 ▶️ 이렇게 Local DNS 서버가 여러 DNS를 차례대로(Root -> com -> naver.com DNS) 거치는 것을 Recursive Query라고 한다.
 
 💡 계층적으로 보면 이렇다.
+
 <img src="https://user-images.githubusercontent.com/60870438/175942706-b58b1654-2466-4958-9392-b566b22133be.png" width=70%>
 
 1. example.com 요청 > "." Root NS에 접근해 top-level 정보 제공
 2. ".com" Top-level NS에 접근해 NS 정보 제공
 3. example = NS에 접근해 IP 정보 제공
 4. IP 정보를 얻은 host의 DNS Server는 해당 주소로 접속 시도
+
+[참고]
+[DNS 동작 과정](https://velog.io/@sms8377/TIL23-DNS-%EB%8F%99%EC%9E%91-%EA%B3%BC%EC%A0%95)
