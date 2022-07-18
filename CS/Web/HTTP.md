@@ -47,49 +47,6 @@ TCP 네트워크에서 통신하는 장치가 서로 잘 연결되어 있는지 
 
 <img src="https://user-images.githubusercontent.com/60870438/179404930-817b2bff-a92d-43f8-b262-ffb524d5ca75.png" width=70%>
 
-#### 💡 HTTP 1.1의 결점
-
-1. One Commection - One Response
-  : 한 요청에 한 응답만 처리하도록 구성되어 있다.
-```
-1. HOL(Head Of Line) Blocking (특정 응답 지연): 클라이언트의 요청과 서버의 응답이 동기화되어 지연 발생
-  네트워크에서 같은 큐에 있는 패킷이 첫번째 패킷으로 인해 지연되는 경우, 발생하는 성능 저하.
-2. RTT(Round Trip Time) 증가 (양방향 지연): 패킷 왕복 시간의 지연 발생
-  Connection 당 하나의 요청을 처리(3-way)하기 때문에 동시전송이 불가능.
-  요청과 응답이 순차적으로 이루어지는 구조여서 리소스 개수에 비례해 대기시간이 길어진다.
-  ex) 하나의 큰 이미지 < 잘게 쪼갠 100개의 이미지
-3. 무거운 Header 구조: 쿠키와 같은 메타데이터에 의해 헤더가 비대해짐.
-  1.1의 헤더에는 많은 메타정보와 실제로 전송할 정보 등이 저장되어 있다. 이 무거운 헤더를 요청시마다 전송하게 되며,
-  domain에 설정된 cookie 정보도 헤더에 포함.
-```
-
-ex3) <img src="https://user-images.githubusercontent.com/60870438/179405278-af4e3f66-f671-4ab7-9c05-633bf35f79c5.png" width=50%>
-
-
-#### 💡 HTTP 2.0의 해결
-
-HTTP2는 HTTP1의 성능 문제를 해결했다. SPDY 기반의 http2.0
-```
-1. Multiplexed Streams: 하나의 커넥션으로 여러개의 메시지를 동시에 주고 받음
-  응답 또한 순서에 상관없이 스트림으로 주고 받는다. 스트림에 우선순위를 설정해 응답이 어느 순서로 오건 상관없이 처리할 수 있다.
-2. Stream Prioritization: 요청 온 리소스의 의존관계를 설정해 먼저 응답해야하는 리소스를 우선 반환
-3. Header Compression: 헤더 정보를 HPACK(Huffman Encoding) 압축 방식을 사용해 압축 전송
-  중복된 Header에 대한 정보는 index값만 전송, 중복되지 않은 Header 정보의 값은 인코딩해 전송
-```
-
-ex1) <img src="https://user-images.githubusercontent.com/60870438/179405369-b891c83a-4c74-4981-89f6-7781ec8edc2c.png" width=70%>
-
-- 기존의 결점
-```
-4. Server Push: HTML 문서 상에 필요한 리소스를 클라이언트 요청없이 보낼 수 있음
-  서버가 클라이언트 요청에 대해 여러 응답을 한번에 보낼 수 있음.
-  즉, 서버는 요청에 응답할 뿐만 아니라 클라이언트가 명시적으로 요청하지 않아도 추가적인 리소스를 클라이언트에 푸시할 수 있다.
-  엄격한 Ack-Response에서 벗어나 서버가 미리 클라이언트에게 필요한 정보를 인지해 푸시함으로써, 좀 더 빠른 응답
-5. 바이너리 프레이밍 계층
-  줄바꿈으로 구분되는 일반 텍스트 HTTP/1.x 프로토콜와 달리 HTTP/2 통신은 더 작은 메시지와 프레임으로 분할.
-  각각은 바이너리 형식으로 인코딩 된다. -> 저 많은 종류의 정보 전달.
-```
-
 세줄요약
 
 1. HOL 블로킹과 RTT 지연을 일으키는 하나의 요청만을 한번에 처리할 수 있는 HTTP1.1의 문제를, HTTP 2.0에서는 멀티플렉싱을 지원함으로써 개선하였다.
@@ -118,11 +75,14 @@ HTTP는 이론상 신뢰성 있는 연결만 할 수 있다면 전송 프로토�
 
 HTTP/0.9~2 : TCP 사용.
 
-#### HTTP/0.9
+### 1. HTTP/0.9
 - get만 존재
 - html 파일 자체를 보냄.
 
-#### HTTP/1.0
+
+</br></br>
+
+### 2. HTTP/1.0
 - header가 생김
 - html이 아닌 다른 파일도 보낼 수 있음
 
@@ -132,7 +92,10 @@ HTTP/0.9~2 : TCP 사용.
 
 ✅ 서버 부하 비용 증가
 
-#### HTTP/1.1
+
+</br></br>
+
+### 3. HTTP/1.1
 
 <img src="https://user-images.githubusercontent.com/60870438/179419823-3ced5228-7e01-4b8e-8103-e5ed5d92ddcd.png" width=70%>
 
@@ -145,7 +108,28 @@ HTTP/0.9~2 : TCP 사용.
 
 ✅ 표준의 대체가 아닌 *확장*
 
-#### HTTP/2
+#### 💡 HTTP 1.1의 결점
+
+1. One Commection - One Response
+  : 한 요청에 한 응답만 처리하도록 구성되어 있다.
+```
+1. HOL(Head Of Line) Blocking (특정 응답 지연): 클라이언트의 요청과 서버의 응답이 동기화되어 지연 발생
+  네트워크에서 같은 큐에 있는 패킷이 첫번째 패킷으로 인해 지연되는 경우, 발생하는 성능 저하.
+2. RTT(Round Trip Time) 증가 (양방향 지연): 패킷 왕복 시간의 지연 발생
+  Connection 당 하나의 요청을 처리(3-way)하기 때문에 동시전송이 불가능.
+  요청과 응답이 순차적으로 이루어지는 구조여서 리소스 개수에 비례해 대기시간이 길어진다.
+  ex) 하나의 큰 이미지 < 잘게 쪼갠 100개의 이미지
+3. 무거운 Header 구조: 쿠키와 같은 메타데이터에 의해 헤더가 비대해짐.
+  1.1의 헤더에는 많은 메타정보와 실제로 전송할 정보 등이 저장되어 있다. 이 무거운 헤더를 요청시마다 전송하게 되며,
+  domain에 설정된 cookie 정보도 헤더에 포함.
+```
+
+ex3) <img src="https://user-images.githubusercontent.com/60870438/179405278-af4e3f66-f671-4ab7-9c05-633bf35f79c5.png" width=50%>
+
+
+</br></br>
+
+### 4. HTTP/2
 
 <img src="https://user-images.githubusercontent.com/60870438/179419090-3c02a72b-a4fc-4432-9589-01eb9f71b7fd.png" width=70%>
 
@@ -176,8 +160,34 @@ HTTP/0.9~2 : TCP 사용.
   - 헤더를 압축해 페이지 로드 시간 감소
   - 중복된 것은 인덱스만 뽑고, 중복된 것은 허프만 인코딩을 통해 압축해 보낸다.
 
+#### 💡 HTTP 2.0의 해결
 
-#### QUIC
+HTTP2는 HTTP1의 성능 문제를 해결했다. SPDY 기반의 http2.0
+```
+1. Multiplexed Streams: 하나의 커넥션으로 여러개의 메시지를 동시에 주고 받음
+  응답 또한 순서에 상관없이 스트림으로 주고 받는다. 스트림에 우선순위를 설정해 응답이 어느 순서로 오건 상관없이 처리할 수 있다.
+2. Stream Prioritization: 요청 온 리소스의 의존관계를 설정해 먼저 응답해야하는 리소스를 우선 반환
+3. Header Compression: 헤더 정보를 HPACK(Huffman Encoding) 압축 방식을 사용해 압축 전송
+  중복된 Header에 대한 정보는 index값만 전송, 중복되지 않은 Header 정보의 값은 인코딩해 전송
+```
+
+ex1) <img src="https://user-images.githubusercontent.com/60870438/179405369-b891c83a-4c74-4981-89f6-7781ec8edc2c.png" width=70%>
+
+- 기존의 결점
+```
+4. Server Push: HTML 문서 상에 필요한 리소스를 클라이언트 요청없이 보낼 수 있음
+  서버가 클라이언트 요청에 대해 여러 응답을 한번에 보낼 수 있음.
+  즉, 서버는 요청에 응답할 뿐만 아니라 클라이언트가 명시적으로 요청하지 않아도 추가적인 리소스를 클라이언트에 푸시할 수 있다.
+  엄격한 Ack-Response에서 벗어나 서버가 미리 클라이언트에게 필요한 정보를 인지해 푸시함으로써, 좀 더 빠른 응답
+5. 바이너리 프레이밍 계층
+  줄바꿈으로 구분되는 일반 텍스트 HTTP/1.x 프로토콜와 달리 HTTP/2 통신은 더 작은 메시지와 프레임으로 분할.
+  각각은 바이너리 형식으로 인코딩 된다. -> 저 많은 종류의 정보 전달.
+```
+
+
+</br></br>
+
+### 5. QUIC
 
 - 전송 계층 프로토콜
 - 2013년에 공개
@@ -207,6 +217,9 @@ HTTP/0.9~2 : TCP 사용.
 ✅ 독립 스트림 사용 -> 향상된 멀티플렉싱 기능
   - 2.0에도 있으나 살짝 다름
 
+
+
+
 #### HTTP/3
 
 - Quic을 바탕으로 나와있음
@@ -225,9 +238,13 @@ HTTP/0.9~2 : TCP 사용.
 |느림|Header 압축|독립 스트림 사용|
 ||TCP의 HOL Blocking 존재||
 
+질문- http3가 상용화되지 않은 이유?
+
+</br></br>
+
 # 참고
 
-[HTTP1.1 vs HTTP2.0](https://blog.naver.com/qja9605/222269034552)
-[쿨라임의 HTTP/1.1, HTTP/2, 그리고 QUIC](https://www.youtube.com/watch?v=xcrjamphIp4)
-[QUIC](http://blog.skby.net/quic-quick-udp-internet-connection/)
-[Chrome Dev](https://www.youtube.com/watch?v=r5oT_2ndjms)
+- [HTTP1.1 vs HTTP2.0](https://blog.naver.com/qja9605/222269034552)
+- [쿨라임의 HTTP/1.1, HTTP/2, 그리고 QUIC](https://www.youtube.com/watch?v=xcrjamphIp4)
+- [QUIC](http://blog.skby.net/quic-quick-udp-internet-connection/)
+- [Chrome Dev](https://www.youtube.com/watch?v=r5oT_2ndjms)
