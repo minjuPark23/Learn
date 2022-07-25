@@ -16,7 +16,31 @@ Server와 Client가 특정 Port를 통해 실시간으로 양방향 통신을 �
 - 계속 연결을 유지하는 연결지향형 방식이기 때문에 실시간 통신이 필요한 경우 자주 사용된다. (ex. 채팅)
 - 실시간 동영상 스트리밍의 경우 스트리밍하는 사람이 방송을 종료할 때까지 서버에 요청을 해야하는데 이러한 구조는 서버 부하를 발생한다.
   따라서 계속 요청하는 것이 아닌 1번의 연결을 통해 연결 유지
+- 전송 계층에서 TCP를 사용
 
+#### 소켓 API의 실행 흐름
+
+<img src="https://user-images.githubusercontent.com/60870438/180710355-1463d206-a7f6-4297-ab6e-e592c3fdabee.png" >
+
+- client
+
+```
+1. 소캣 생성
+2. 서버 측에 연결
+3. 서버 소켓에서 연결을 받으면 데이터 송수신
+4. 모든 처리가 완료되면 소켓을 닫음
+```
+
+- Server
+
+```
+1. 소켓 생성
+2. 서버가 사용할 IP 주소와 포트 번호를 생성한 소켓에 결합
+3. 클라이언트로부터 연결 요청이 수신되는지 주시
+4. 요청이 수신되면 accept 후 소켓 생성
+5. 데이터 송수신
+6. 소켓 닫음
+```
 
 ## Web Socket
 
@@ -107,5 +131,7 @@ PCI에는 송/수신자 주소, 오류 검출 코드, 프로토콜 제어 정보
 
 
 ## 참고
-[socket.io와 webSocket](https://theheydaze.tistory.com/565)
-[신입 웹 개발자 면접 질문](https://minchoi0912.tistory.com/93)
+- [socket.io와 webSocket](https://theheydaze.tistory.com/565)
+- [신입 웹 개발자 면접 질문](https://minchoi0912.tistory.com/93)
+- [소켓과 소켓 프로그래밍](https://velog.io/@devsh/%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC-%EA%B8%B0%EC%B4%88-%EA%B0%9C%EB%85%90-%EC%A0%95%EB%A6%AC%ED%95%98%EA%B8%B0-%EC%86%8C%EC%BC%93%EA%B3%BC-%EC%86%8C%EC%BC%93-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D-%EA%B0%9C%EB%85%90)
+- [Node.js와 Socket.io](https://poiemaweb.com/nodejs-socketio)
