@@ -18,6 +18,14 @@ Nginx는 웹서버로 리버스 프록시, 로드밸런서, http cache로 쓰일
 
 ### Apache Server
 
+<img src="https://user-images.githubusercontent.com/60870438/183512136-d14fd33d-708a-422e-8927-e4e437fe70a6.png" width=70%>
+
+```
+1. 프로세스 기반 접근 방식: 하나의 스레드가 하나의 요청 처리
+2. 매 요청마다 스레드 생성, 리소스 많이 (멀티 스레드)
+```
+
+
 - 1995년도
 - request가 들어오면 커넥션을 위해 프로세스 생성
 - 즉, 새로운 클라이언트의 요청마다 프로세스 생성 (== unix의 os 네트워크 커넥션 모델 형성 과정)
@@ -31,6 +39,8 @@ Nginx는 웹서버로 리버스 프록시, 로드밸런서, http cache로 쓰일
 ✅ 장점: 개발하기 쉽다.
 유용한 모듈을 만들어 사용하면서 빠르게 서버에 적용시킬 수 있게 되었다.
 또한, 확장성이 좋아 request와 response를 하나의 서버에서 처리할 수 있다.
+
+웹 서버 자체 내에서 동적 컨텐츠 처리 가능
 ```
 
 - 1999년
@@ -85,7 +95,13 @@ Nginx는 웹서버로 리버스 프록시, 로드밸런서, http cache로 쓰일
 
 ### Nginx
 
-<img src="https://user-images.githubusercontent.com/60870438/183291504-c41cc1b3-ea16-49a1-8e1f-63db274e0ac8.png" width=70%>
+<img src="https://user-images.githubusercontent.com/60870438/183511638-a7172bc7-a888-4b9a-9318-5b2fbc8724c1.png" width=70%>
+
+```
+1. 이벤트 중심 접근 방식: 하나의 스레드 내에서 여러 요청 처리
+2. 비동기 Event-Driven: Event Handler 사용
+3. 적은 리소스로 많은 트래픽 효율적 처리
+```
 
 - master process가 존재해 설정 파일을 읽고 worker process를 생성해 실제 동작.
 - worker process는 생성될 때 지정된 listen socket을 갖는다.
