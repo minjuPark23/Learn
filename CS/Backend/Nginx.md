@@ -189,3 +189,4 @@ Nginx는 웹서버로 리버스 프록시, 로드밸런서, http cache로 쓰일
 
 # 참고
 [Nginx](https://www.youtube.com/watch?v=6FAwAXXj5N0)
+[Apache vs Nginx](https://jungyu09.tistory.com/12)
