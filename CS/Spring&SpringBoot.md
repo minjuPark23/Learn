@@ -15,6 +15,10 @@ that you can just run
 
 ## Spring
 
+- Spring Framework를 이용해 엔터프라이즈 애플리케이션을 쉽게 만들 수 있다.
+  - DI / IoC : 객체간의 결합도 느슨하게 -> 코드 재사용성, 단위 테스트 용이 => 생상성
+  - 엔터프라이즈 애플리케이션: 대규모 데이터 처리, 트랜잭션 처리
+
 ### 1. dependency(의존성)
 
 모든 dependency를 버전까지 적어줘야한다.
